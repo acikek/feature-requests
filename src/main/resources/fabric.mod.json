@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "featurerequests",
+  "version": "${version}",
+  "name": "Feature Requests",
+  "description": "Dynamic requestable content framework for Minecraft",
+  "authors": [
+    "acikek"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/featurerequests/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.acikek.featurerequests.FeatureRequestsMod"
+    ]
+  },
+  "mixins": [
+    "featurerequests.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "fabric": "*",
+    "minecraft": "1.20.1"
+  }
+}
