@@ -60,6 +60,14 @@ public interface FeatureRequestPortal<T, R extends FeatureRequests<?>> {
     Map<T, R> requests();
 
     /**
+     * Adds a request to the {@link FeatureRequestPortal#requests()}.<br>
+     * You should never construct and add request containers manually.
+     * Instead, use the idiomatic {@code submit} and {@link FeatureRequestPortal#all()} method families.
+     */
+    @ApiStatus.OverrideOnly
+    void addRequest(T holder, R requests);
+
+    /**
      * @return a map of known applicable content holders
      * @see FeatureRequestPortal#isHolderPresent(T)
      */
@@ -81,7 +89,7 @@ public interface FeatureRequestPortal<T, R extends FeatureRequests<?>> {
         if (isHolderPresent(holder)) {
             return holder;
         }
-        throw new IllegalStateException("content holder '" + holder + "' not present in request portal " + verbose());
+        throw new IllegalStateException("content holder '" + holder + "' does not exist in request portal " + verbose());
     }
 
     /**
@@ -107,9 +115,7 @@ public interface FeatureRequestPortal<T, R extends FeatureRequests<?>> {
     /**
      * Submits requests for all features to all known content holders.
      */
-    default void all() {
-        all(holders().values());
-    }
+    void all();
 
     /**
      * @return submitted requests for the specified content holder

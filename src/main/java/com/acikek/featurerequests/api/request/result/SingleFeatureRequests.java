@@ -20,7 +20,7 @@ public final class SingleFeatureRequests extends FeatureRequests<Set<Identifier>
     }
 
     @ApiStatus.Internal
-    private static SingleFeatureRequests emptyWithAll(boolean all) {
+    public static SingleFeatureRequests emptyWithAll(boolean all) {
         return new SingleFeatureRequests(all, new HashSet<>());
     }
 

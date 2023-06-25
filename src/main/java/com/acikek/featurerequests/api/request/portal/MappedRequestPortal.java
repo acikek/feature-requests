@@ -1,7 +1,6 @@
 package com.acikek.featurerequests.api.request.portal;
 
 import com.acikek.featurerequests.api.request.result.MappedFeatureRequests;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.util.Identifier;
 
@@ -59,13 +58,8 @@ public interface MappedRequestPortal<T, K> extends FeatureRequestPortal<T, Mappe
     }
 
     /**
-     * @return a mapping key converted from a JSON element
+     * @return a mapping key converted from a JSON string
      * @throws JsonSyntaxException if the conversion fails
      */
-    K mappingFromJson(JsonElement element);
-
-    @Override
-    default MappedFeatureRequests<K> getRequests(T holder) {
-        return requests().getOrDefault(holder, MappedFeatureRequests.empty());
-    }
+    K mappingFromJson(String mapping);
 }

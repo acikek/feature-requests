@@ -15,9 +15,9 @@ public final class RequestPortals {
 
     private RequestPortals() {}
 
-    public static <T> Map<Identifier, T> createMap(Collection<T> holders, Function<T, Identifier> idMapper) {
+    public static <T> Map<Identifier, T> createMap(Collection<T> holders, Function<T, Identifier> idFn) {
         return holders.stream()
-                .map(holder -> new Pair<>(idMapper.apply(holder), holder))
+                .map(holder -> new Pair<>(idFn.apply(holder), holder))
                 .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
     }
 
@@ -25,11 +25,11 @@ public final class RequestPortals {
         return new SingleRequestPortalImpl<>(name, holders);
     }
 
-    public static <T, K> MappedRequestPortal<T, K> mapped(String name, Map<Identifier, T> holders, Function<JsonElement, K> deserializer) {
+    public static <T, K> MappedRequestPortal<T, K> mapped(String name, Map<Identifier, T> holders, Function<String, K> deserializer) {
         return new MappedRequestPortalImpl<>(name, holders, deserializer);
     }
 
     public static <T> MappedRequestPortal<T, Identifier> idMapped(String name, Map<Identifier, T> holders) {
-        return new MappedRequestPortalImpl<>(name, holders, element -> Identifier.tryParse(element.getAsString()));
+        return new MappedRequestPortalImpl<>(name, holders, Identifier::new);
     }
 }

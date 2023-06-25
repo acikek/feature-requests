@@ -20,7 +20,7 @@ public final class MappedFeatureRequests<K> extends FeatureRequests<Map<K, Singl
     }
 
     @ApiStatus.Internal
-    private static <K> MappedFeatureRequests<K> emptyWithAll(boolean all) {
+    public static <K> MappedFeatureRequests<K> emptyWithAll(boolean all) {
         return new MappedFeatureRequests<>(all, new HashMap<>());
     }
 

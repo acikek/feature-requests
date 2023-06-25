@@ -29,4 +29,9 @@ public class SingleRequestPortalImpl<T>
             requests.put(checkHolder(holder), SingleFeatureRequests.useAll());
         }
     }
+
+    @Override
+    protected SingleFeatureRequests emptyWithAll(boolean all) {
+        return SingleFeatureRequests.emptyWithAll(all);
+    }
 }

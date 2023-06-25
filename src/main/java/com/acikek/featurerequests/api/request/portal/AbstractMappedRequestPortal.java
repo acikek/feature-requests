@@ -40,4 +40,9 @@ public abstract class AbstractMappedRequestPortal<T, K>
             requests.put(checkHolder(holder), MappedFeatureRequests.useAll());
         }
     }
+
+    @Override
+    protected MappedFeatureRequests<K> emptyWithAll(boolean all) {
+        return MappedFeatureRequests.emptyWithAll(all);
+    }
 }

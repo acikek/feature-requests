@@ -26,9 +26,4 @@ public interface SingleRequestPortal<T> extends FeatureRequestPortal<T, SingleFe
     default void submit(T holder, Identifier request) {
         submit(holder, Collections.singleton(request));
     }
-
-    @Override
-    default SingleFeatureRequests getRequests(T holder) {
-        return requests().getOrDefault(holder, SingleFeatureRequests.empty());
-    }
 }

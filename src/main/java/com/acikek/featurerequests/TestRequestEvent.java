@@ -18,7 +18,7 @@ public class TestRequestEvent extends AbstractRequestEvent {
         return new Identifier("test:numbers");
     }
 
-    private final SingleRequestPortal<Integer> digits = RequestPortals.single("floats", Map.of(
+    private final SingleRequestPortal<Integer> digits = RequestPortals.single("digits", Map.of(
             new Identifier("test:ten"), 10,
             new Identifier("test:one_thousand"), 100
     ));
