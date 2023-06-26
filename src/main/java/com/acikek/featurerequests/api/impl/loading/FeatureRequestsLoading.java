@@ -38,11 +38,12 @@ public class FeatureRequestsLoading {
             )
     );
 
-    public static void load() {
+    public static int load() {
         var plugins = PLUGINS.get();
         plugins.forEach(FeatureRequestsPlugin::onLoad);
         plugins.forEach(FeatureRequestsLoading::loadPlugin);
         plugins.forEach(FeatureRequestsPlugin::afterLoad);
+        return plugins.size();
     }
 
     public static Path getEventPath(FeatureRequestsPlugin plugin, FeatureRequestEvent event) {
@@ -60,7 +61,7 @@ public class FeatureRequestsLoading {
             return FeatureRequestsLoading.GSON.fromJson(content, JsonObject.class);
         }
         catch (IOException e) {
-            var obj = event.createDefaultObject(plugin.isDefaultEnabled());
+            var obj = event.createDefaultObject();
             String content = FeatureRequestsLoading.GSON.toJson(obj);
             try {
                 Files.createDirectories(path.getParent());
@@ -132,11 +133,14 @@ public class FeatureRequestsLoading {
         }
     }
 
-    public static void loadPortal(Map<String, FeatureRequestPortal<?, ?>> portalMap, String key, JsonElement element) {
+    public static void loadPortal(Map<String, FeatureRequestPortal<?, ?>> portalMap, String key, JsonElement element, boolean debug) {
         if (!portalMap.containsKey(key)) {
             throw new JsonSyntaxException("request portal '" + key + "' does not exist");
         }
         var portal = portalMap.get(key);
+        if (debug) {
+            FeatureRequestsMod.LOGGER.info("Loading portal '{}' in event '{}'...", portal.name(), portal.event().id());
+        }
         if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isBoolean()) {
             portal.all();
             return;
@@ -155,19 +159,24 @@ public class FeatureRequestsLoading {
         }
     }
 
-    public static void loadEvent(FeatureRequestEvent event, JsonObject file) {
+    public static void loadEvent(FeatureRequestEvent event, JsonObject file, boolean debug) {
         var map = event.portalMap();
         for (var entry : file.entrySet()) {
             String key = entry.getKey();
-            loadPortal(map, key, entry.getValue());
+            loadPortal(map, key, entry.getValue(), debug);
         }
     }
 
     public static void loadPlugin(FeatureRequestsPlugin plugin) {
+        boolean debug = FabricLoader.getInstance().isDevelopmentEnvironment();
+        if (debug) {
+            FeatureRequestsMod.LOGGER.info("Loading plugin '{}'...", plugin.getClass().getName());
+        }
         for (var event : plugin.events()) {
             try {
                 var obj = readEvent(plugin, event);
                 loadEvent(event, obj);
+                if ()
             }
             catch (Exception e) {
                 throw new JsonSyntaxException("error while submitting request to event '" + event.id() + "' (" + getEventPath(plugin, event) + ")", e);

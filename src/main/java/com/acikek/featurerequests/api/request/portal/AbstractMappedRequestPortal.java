@@ -11,8 +11,8 @@ public abstract class AbstractMappedRequestPortal<T, K>
         extends AbstractRequestPortal<T, MappedFeatureRequests<K>>
         implements MappedRequestPortal<T, K> {
 
-    public AbstractMappedRequestPortal(String name, Map<Identifier, T> holders) {
-        super(name, holders);
+    public AbstractMappedRequestPortal(String name, boolean defaultEnabled, Map<Identifier, T> holders) {
+        super(name, defaultEnabled, holders);
     }
 
     private MappedFeatureRequests<K> getMapped(T holder) {

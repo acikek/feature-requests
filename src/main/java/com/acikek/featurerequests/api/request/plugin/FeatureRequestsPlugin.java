@@ -11,10 +11,6 @@ public interface FeatureRequestsPlugin {
 
     Collection<FeatureRequestEvent> events();
 
-    default boolean isDefaultEnabled() {
-        return false;
-    }
-
     @ApiStatus.OverrideOnly
     default void onLoad() {
         // Empty
@@ -29,5 +25,10 @@ public interface FeatureRequestsPlugin {
         return events().size() == 1
                 ? Iterables.get(events(), 0)
                 : null;
+    }
+
+    @ApiStatus.Internal
+    default void init() {
+        events().forEach(FeatureRequestEvent::init);
     }
 }

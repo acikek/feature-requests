@@ -13,8 +13,8 @@ public class SingleRequestPortalImpl<T>
         extends AbstractRequestPortal<T, SingleFeatureRequests>
         implements SingleRequestPortal<T> {
 
-    public SingleRequestPortalImpl(String name, Map<Identifier, T> holders) {
-        super(name, holders);
+    public SingleRequestPortalImpl(String name, boolean defaultEnabled, Map<Identifier, T> holders) {
+        super(name, defaultEnabled, holders);
     }
 
     @Override

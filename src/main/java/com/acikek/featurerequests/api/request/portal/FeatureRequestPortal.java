@@ -38,6 +38,11 @@ public interface FeatureRequestPortal<T, R extends FeatureRequests<?>> {
     String name();
 
     /**
+     * @return whether this request portal's content should be enabled by default
+     */
+    boolean isDefaultEnabled();
+
+    /**
      * @return the event contianing this request portal
      */
     @ApiStatus.OverrideOnly

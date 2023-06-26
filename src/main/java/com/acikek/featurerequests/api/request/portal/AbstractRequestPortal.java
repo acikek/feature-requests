@@ -7,27 +7,31 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 public abstract class AbstractRequestPortal<T, R extends FeatureRequests<?>> implements FeatureRequestPortal<T, R> {
 
     private final String name;
+    private final boolean defaultEnabled;
     protected final Map<T, R> requests = new HashMap<>();
     private final Map<Identifier, T> holders;
 
     private FeatureRequestEvent event = null;
     protected boolean all = false;
 
-    public AbstractRequestPortal(String name, Map<Identifier, T> holders) {
-        Stream.of(name, holders).forEach(Objects::requireNonNull);
+    public AbstractRequestPortal(String name, boolean defaultEnabled, Map<Identifier, T> holders) {
         this.name = name;
+        this.defaultEnabled = defaultEnabled;
         this.holders = holders;
     }
 
     @Override
     public String name() {
         return name;
+    }
+
+    @Override
+    public boolean isDefaultEnabled() {
+        return defaultEnabled;
     }
 
     @Override

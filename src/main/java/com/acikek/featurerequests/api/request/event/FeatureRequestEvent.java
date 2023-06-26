@@ -30,10 +30,17 @@ public interface FeatureRequestEvent {
     }
 
     @ApiStatus.Internal
-    default JsonObject createDefaultObject(boolean enabled) {
+    default void init() {
+        for (var portal : portals()) {
+            portal.setEvent(this);
+        }
+    }
+
+    @ApiStatus.Internal
+    default JsonObject createDefaultObject() {
         var obj = new JsonObject();
         for (var portal : portals()) {
-            obj.add(portal.name(), new JsonPrimitive(enabled));
+            obj.add(portal.name(), new JsonPrimitive(portal.isDefaultEnabled()));
         }
         return obj;
     }

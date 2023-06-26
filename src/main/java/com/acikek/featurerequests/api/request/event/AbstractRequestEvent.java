@@ -4,6 +4,6 @@ public abstract class AbstractRequestEvent implements FeatureRequestEvent {
 
     @Override
     public String toString() {
-        return this.getClass().getName() + portalMap().toString();
+        return portalMap().toString();
     }
 }

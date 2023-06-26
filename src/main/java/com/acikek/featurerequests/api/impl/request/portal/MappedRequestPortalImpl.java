@@ -10,8 +10,8 @@ public class MappedRequestPortalImpl<T, K> extends AbstractMappedRequestPortal<T
 
     private final Function<String, K> deserializer;
 
-    public MappedRequestPortalImpl(String name, Map<Identifier, T> holders, Function<String, K> deserializer) {
-        super(name, holders);
+    public MappedRequestPortalImpl(String name, boolean defaultEnabled, Map<Identifier, T> holders, Function<String, K> deserializer) {
+        super(name, defaultEnabled, holders);
         this.deserializer = deserializer;
     }
 
