@@ -12,7 +12,6 @@ public class TestRequestPlugin implements FeatureRequestsPlugin {
 
     @Override
     public void afterLoad() {
-        System.out.println(event);
     }
 
     @Override

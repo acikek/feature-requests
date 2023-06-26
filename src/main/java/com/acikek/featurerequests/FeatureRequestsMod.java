@@ -15,12 +15,6 @@ public class FeatureRequestsMod implements ModInitializer {
     @Override
     public void onInitialize() {
         int plugins = FeatureRequestsLoading.load();
-        LOGGER.info("Feature Requests loaded with {} plugin(s)", plugins);
-    }
-
-    public static void debug(String message) {
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            LOGGER.info(message);
-        }
+        LOGGER.info("Feature Requests loaded with {} plugin(s) present", plugins);
     }
 }

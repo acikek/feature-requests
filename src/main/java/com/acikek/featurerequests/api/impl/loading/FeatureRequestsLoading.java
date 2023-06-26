@@ -39,9 +39,11 @@ public class FeatureRequestsLoading {
     );
 
     public static int load() {
+        boolean debug = FabricLoader.getInstance().isDevelopmentEnvironment();
         var plugins = PLUGINS.get();
+        plugins.forEach(FeatureRequestsPlugin::init);
         plugins.forEach(FeatureRequestsPlugin::onLoad);
-        plugins.forEach(FeatureRequestsLoading::loadPlugin);
+        plugins.forEach(plugin -> loadPlugin(plugin, debug));
         plugins.forEach(FeatureRequestsPlugin::afterLoad);
         return plugins.size();
     }
@@ -157,6 +159,9 @@ public class FeatureRequestsLoading {
                 throw new JsonSyntaxException("error while submitting request to portal '" + key + "' for holder '" + holderId + "'", e);
             }
         }
+        if (debug) {
+            FeatureRequestsMod.LOGGER.info("Portal loaded! Results: {}", portal);
+        }
     }
 
     public static void loadEvent(FeatureRequestEvent event, JsonObject file, boolean debug) {
@@ -167,16 +172,14 @@ public class FeatureRequestsLoading {
         }
     }
 
-    public static void loadPlugin(FeatureRequestsPlugin plugin) {
-        boolean debug = FabricLoader.getInstance().isDevelopmentEnvironment();
+    public static void loadPlugin(FeatureRequestsPlugin plugin, boolean debug) {
         if (debug) {
             FeatureRequestsMod.LOGGER.info("Loading plugin '{}'...", plugin.getClass().getName());
         }
         for (var event : plugin.events()) {
             try {
                 var obj = readEvent(plugin, event);
-                loadEvent(event, obj);
-                if ()
+                loadEvent(event, obj, debug);
             }
             catch (Exception e) {
                 throw new JsonSyntaxException("error while submitting request to event '" + event.id() + "' (" + getEventPath(plugin, event) + ")", e);

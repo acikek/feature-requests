@@ -2,7 +2,6 @@ package com.acikek.featurerequests.api.request.portal;
 
 import com.acikek.featurerequests.api.impl.request.portal.MappedRequestPortalImpl;
 import com.acikek.featurerequests.api.impl.request.portal.SingleRequestPortalImpl;
-import com.google.gson.JsonElement;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 
@@ -21,15 +20,27 @@ public final class RequestPortals {
                 .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
     }
 
+    public static <T> SingleRequestPortal<T> single(String name, boolean defaultEnabled, Map<Identifier, T> holders) {
+        return new SingleRequestPortalImpl<>(name, defaultEnabled, holders);
+    }
+
     public static <T> SingleRequestPortal<T> single(String name, Map<Identifier, T> holders) {
-        return new SingleRequestPortalImpl<>(name, holders);
+        return single(name, false, holders);
+    }
+
+    public static <T, K> MappedRequestPortal<T, K> mapped(String name, boolean defaultEnabled, Map<Identifier, T> holders, Function<String, K> deserializer) {
+        return new MappedRequestPortalImpl<>(name, defaultEnabled, holders, deserializer);
     }
 
     public static <T, K> MappedRequestPortal<T, K> mapped(String name, Map<Identifier, T> holders, Function<String, K> deserializer) {
-        return new MappedRequestPortalImpl<>(name, holders, deserializer);
+        return mapped(name, false, holders, deserializer);
+    }
+
+    public static <T> MappedRequestPortal<T, Identifier> idMapped(String name, boolean defaultEnabled, Map<Identifier, T> holders) {
+        return new MappedRequestPortalImpl<>(name, defaultEnabled, holders, Identifier::new);
     }
 
     public static <T> MappedRequestPortal<T, Identifier> idMapped(String name, Map<Identifier, T> holders) {
-        return new MappedRequestPortalImpl<>(name, holders, Identifier::new);
+        return idMapped(name, false, holders);
     }
 }
