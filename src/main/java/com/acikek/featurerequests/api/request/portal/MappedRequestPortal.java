@@ -9,6 +9,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+/**
+ * A request portal wherein users can request features from a content holder's keys.
+ * Therefore, the requests for a content holder in this portal are <b>mapped</b> by a specific key.<br>
+ *
+ * Content holders are represented in JSON by their {@link Identifier} in the {@link FeatureRequestPortal#holders()} map
+ * and deserialized by referencing this map. The key type {@code K} is flexible, but a mapped request portal must be
+ * provided a deserialization function (from a {@link String}) called in {@link MappedRequestPortal#mappingFromJson(String)}.
+ *
+ * @param <K> the deserializable key type
+ */
 public interface MappedRequestPortal<T, K> extends FeatureRequestPortal<T, MappedFeatureRequests<K>> {
 
     /**

@@ -1,6 +1,7 @@
 package com.acikek.featurerequests.api.request.portal;
 
 import com.acikek.featurerequests.api.request.event.FeatureRequestEvent;
+import com.acikek.featurerequests.api.request.plugin.FeatureRequestsPlugin;
 import com.acikek.featurerequests.api.request.result.FeatureRequests;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
@@ -128,9 +129,10 @@ public interface FeatureRequestPortal<T, R extends FeatureRequests<?>> {
     R getRequests(T holder);
 
     /**
-     * @return verbose identifier including the {@link FeatureRequestPortal#name()} and {@link FeatureRequestPortal#event()} id
+     * @return verbose identifier including the {@link FeatureRequestPortal#name()},
+     * {@link FeatureRequestEvent#name()}, and {@link FeatureRequestsPlugin#namespace()}
      */
     default String verbose() {
-        return "'" + name() + "' (" + event().id() + ")";
+        return "'" + name() + "' (event: " + event().name() + ", plugin: " + event().plugin().namespace() + ")";
     }
 }

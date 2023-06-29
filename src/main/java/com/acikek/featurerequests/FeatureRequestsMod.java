@@ -2,7 +2,6 @@ package com.acikek.featurerequests;
 
 import com.acikek.featurerequests.api.impl.loading.FeatureRequestsLoading;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

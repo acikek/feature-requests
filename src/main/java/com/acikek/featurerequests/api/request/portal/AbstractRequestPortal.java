@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An abstract implementation of a {@link FeatureRequestPortal}.
+ */
 public abstract class AbstractRequestPortal<T, R extends FeatureRequests<?>> implements FeatureRequestPortal<T, R> {
 
     private final String name;
@@ -74,6 +77,6 @@ public abstract class AbstractRequestPortal<T, R extends FeatureRequests<?>> imp
 
     @Override
     public String toString() {
-        return requests().toString();
+        return all ? "portal(all)" : requests().toString();
     }
 }

@@ -6,6 +6,10 @@ import net.minecraft.util.Identifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * A request portal wherein users can request features from content holders directly.
+ * Therefore, there is a <b>single</b> layer of abstraction.
+ */
 public interface SingleRequestPortal<T> extends FeatureRequestPortal<T, SingleFeatureRequests> {
 
     /**

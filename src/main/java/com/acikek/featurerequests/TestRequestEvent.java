@@ -14,8 +14,8 @@ import java.util.Map;
 public class TestRequestEvent extends AbstractRequestEvent {
 
     @Override
-    public Identifier id() {
-        return new Identifier("test:numbers");
+    public String name() {
+        return "numbers";
     }
 
     private final SingleRequestPortal<Integer> digits = RequestPortals.single("digits", Map.of(

@@ -9,10 +9,9 @@ import com.acikek.featurerequests.api.request.portal.SingleRequestPortal;
 import com.acikek.featurerequests.api.request.result.FeatureRequests;
 import com.acikek.featurerequests.api.request.result.MappedFeatureRequests;
 import com.acikek.featurerequests.api.request.result.SingleFeatureRequests;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.jetbrains.annotations.ApiStatus;
@@ -25,23 +24,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 @ApiStatus.Internal
 public class FeatureRequestsLoading {
 
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private static final Supplier<ImmutableList<FeatureRequestsPlugin>> PLUGINS = Suppliers.memoize(
-            () -> ImmutableList.copyOf(
-                    FabricLoader.getInstance().getEntrypoints(FeatureRequestsMod.ID, FeatureRequestsPlugin.class)
-            )
-    );
-
     public static int load() {
         boolean debug = FabricLoader.getInstance().isDevelopmentEnvironment();
-        var plugins = PLUGINS.get();
-        plugins.forEach(FeatureRequestsPlugin::init);
+        var containers = FabricLoader.getInstance().getEntrypointContainers(FeatureRequestsMod.ID, FeatureRequestsPlugin.class);
+        var plugins = containers.stream()
+                .map(EntrypointContainer::getEntrypoint)
+                .toList();
+        containers.forEach(container -> container.getEntrypoint().init(container.getProvider()));
         plugins.forEach(FeatureRequestsPlugin::onLoad);
         plugins.forEach(plugin -> loadPlugin(plugin, debug));
         plugins.forEach(FeatureRequestsPlugin::afterLoad);
@@ -49,9 +44,9 @@ public class FeatureRequestsLoading {
     }
 
     public static Path getEventPath(FeatureRequestsPlugin plugin, FeatureRequestEvent event) {
-        String base = FeatureRequestsMod.ID + "/" + event.id().getNamespace();
+        String base = FeatureRequestsMod.ID + "/" + plugin.namespace();
         if (event != plugin.mainEvent()) {
-            base += "/" + event.id().getPath();
+            base += "/" + event.name();
         }
         return FabricLoader.getInstance().getConfigDir().resolve(base + ".json");
     }
@@ -70,7 +65,7 @@ public class FeatureRequestsLoading {
                 Files.writeString(path, content);
             }
             catch (IOException ex) {
-                FeatureRequestsMod.LOGGER.error("Failed to write config file for request event '" + event.id() + "'", e);
+                FeatureRequestsMod.LOGGER.error("Failed to write config file for request event " + event.name(), e);
             }
             return obj;
         }
@@ -104,7 +99,7 @@ public class FeatureRequestsLoading {
     public static <T, K> void addRequestToMapped(MappedRequestPortal<T, K> portal, T holder, JsonElement element) {
         MappedFeatureRequests<K> all = emptyWithAll(element, MappedFeatureRequests::emptyWithAll);
         if (all != null) {
-            portal.all();
+            portal.all(holder);
             return;
         }
         if (!element.isJsonObject()) {
@@ -141,22 +136,25 @@ public class FeatureRequestsLoading {
         }
         var portal = portalMap.get(key);
         if (debug) {
-            FeatureRequestsMod.LOGGER.info("Loading portal '{}' in event '{}'...", portal.name(), portal.event().id());
+            FeatureRequestsMod.LOGGER.info("Loading portal '{}' in event '{}'...", portal.name(), portal.event().name());
         }
         if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isBoolean()) {
-            portal.all();
-            return;
-        }
-        if (!element.isJsonObject()) {
-            throw new JsonSyntaxException("portal request set must be a boolean or an object");
-        }
-        for (var entry : element.getAsJsonObject().entrySet()) {
-            var holderId = new Identifier(entry.getKey());
-            try {
-                addRequest(portal, holderId, entry.getValue());
+            if (element.getAsBoolean()) {
+                portal.all();
             }
-            catch (Exception e) {
-                throw new JsonSyntaxException("error while submitting request to portal '" + key + "' for holder '" + holderId + "'", e);
+        }
+        else {
+            if (!element.isJsonObject()) {
+                throw new JsonSyntaxException("portal request set must be a boolean or an object");
+            }
+            for (var entry : element.getAsJsonObject().entrySet()) {
+                var holderId = new Identifier(entry.getKey());
+                try {
+                    addRequest(portal, holderId, entry.getValue());
+                }
+                catch (Exception e) {
+                    throw new JsonSyntaxException("error while submitting request to portal '" + key + "' for holder '" + holderId + "'", e);
+                }
             }
         }
         if (debug) {
@@ -174,7 +172,7 @@ public class FeatureRequestsLoading {
 
     public static void loadPlugin(FeatureRequestsPlugin plugin, boolean debug) {
         if (debug) {
-            FeatureRequestsMod.LOGGER.info("Loading plugin '{}'...", plugin.getClass().getName());
+            FeatureRequestsMod.LOGGER.info("Loading plugin '{}' ({})...", plugin.namespace(), plugin.getClass().getName());
         }
         for (var event : plugin.events()) {
             try {
@@ -182,7 +180,7 @@ public class FeatureRequestsLoading {
                 loadEvent(event, obj, debug);
             }
             catch (Exception e) {
-                throw new JsonSyntaxException("error while submitting request to event '" + event.id() + "' (" + getEventPath(plugin, event) + ")", e);
+                throw new JsonSyntaxException("error while submitting request to event '" + event.name() + "' (" + getEventPath(plugin, event) + ")", e);
             }
         }
     }

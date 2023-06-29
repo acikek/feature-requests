@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A structure containing the results of a {@link SingleRequestPortal}.<br>
+ * A structure containing the results of a {@link SingleRequestPortal} or the mapped results of a {@link MappedFeatureRequests} instance.<br>
  * To check if a feature is requested, use {@link SingleFeatureRequests#contains(Identifier)}.<br>
- * It is not necessary to manually check {@link FeatureRequests#all()}, as the {@code contains} method does so on its own.
+ * It is not necessary to manually check {@link FeatureRequests#all()}, as the aforemenetioned {@code contains} method does so on its own.
  */
 public final class SingleFeatureRequests extends FeatureRequests<Set<Identifier>> {
 

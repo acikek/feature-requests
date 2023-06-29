@@ -7,6 +7,9 @@ import net.minecraft.util.Identifier;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * An abstract implementation of a {@link MappedRequestPortal}.
+ */
 public abstract class AbstractMappedRequestPortal<T, K>
         extends AbstractRequestPortal<T, MappedFeatureRequests<K>>
         implements MappedRequestPortal<T, K> {

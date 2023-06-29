@@ -6,9 +6,14 @@ import com.acikek.featurerequests.api.request.plugin.FeatureRequestsPlugin;
 import java.util.Collection;
 import java.util.List;
 
-public class TestRequestPlugin implements FeatureRequestsPlugin {
+public class TestRequestPlugin extends FeatureRequestsPlugin {
 
     public static TestRequestEvent event = new TestRequestEvent();
+
+    @Override
+    public String namespace() {
+        return "test";
+    }
 
     @Override
     public void afterLoad() {
